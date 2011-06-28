@@ -34,17 +34,17 @@ public class HamiltonianRoute {
 	public static int hamiltonian_routes_count(int[] A) {
 		
 		int returnVal = 0;
-		/** TODO: Check town route A for violation of 3 Hamiltonian rules
+		/** Check town route A for violation of 3 Hamiltonian rules
 		 * 		1) each road connects distinct towns
 		 * 		2) each town is visited either exactly once or exactly thrice
 		 * 		3) each road is taken exactly twice
 		 */
 		if (hasHamRuleViolation(A)) return -2;
 		
-		//	TODO: Get cul-de-sacs from array; Store indeces of cul-de-sacs?
+		//	TODO: Get cul-de-sacs and create (insert) circular highway routes
 		
 		/** TODO: Connect all cul-de-sacs (copy orig route A to tempVar;
-		 *		insert cul-de-sac routes (roads taken twice) 
+		 *		insert cul-de-sac routes (roads must be taken twice))
 		 */
 		
 		// TODO: get possible HamRoutes from new temp Array (hamRoute)
@@ -59,8 +59,24 @@ public class HamiltonianRoute {
 		// HamRule#3: each road is taken exactly twice
 
 		// Get roads and store in an Array.
-		Hashtable roads = new Hashtable();
-		List roadList = Arrays.asList(route);
+		ArrayList<String> roads = new ArrayList<String>(route.length);
+		// Get route of visited towns and convert to Array.
+		ArrayList<Integer> routeArr = new ArrayList<Integer>(route.length);
+		for (int i=0; i<route.length; i++) {
+			routeArr.add(route[i]);
+
+			int[] road = { route[i], 0 };
+			if ( i != route.length - 1 ) {
+				road[1] = route[i+1];
+			} else {
+				road[1] = route[0];
+			}
+
+			StringBuffer strBuff = new StringBuffer();
+			strBuff.append(String.valueOf(road[0]));
+			strBuff.append(String.valueOf(road[1]));
+			roads.add(strBuff.toString());
+		}
 		
 		for (int i=0; i<route.length; i++) {
 			int[] road = { route[i], 0 };
@@ -74,13 +90,15 @@ public class HamiltonianRoute {
 			if (road[0] == road[1]) return true;
 			
 			// HamRule#2: each town is visited either exactly once or exactly thrice
-			Integer toFind = new Integer(road[0]);
-			int occurrence = Collections.frequency(roadList, toFind);
-			if (occurrence != 1 || occurrence != 3) return true;
+			int townOccurrence = Collections.frequency(routeArr, road[0]);
+			if (townOccurrence != 1 && townOccurrence != 3) return true;
 			
 			// HamRule#3: each road is taken exactly twice
-			int index = roadList.lastIndexOf(road[1]);
-			// if (road[0] + road[1] != road[1] + road[index+1]) return false;
+			StringBuffer returnRoad = new StringBuffer();
+			returnRoad.append(String.valueOf(road[1]));
+			returnRoad.append(String.valueOf(road[0]));
+			int roadOccurrence = Collections.frequency(roads, returnRoad.toString());
+			if (roadOccurrence != 1) return true;
 		}
 
 		return false;
