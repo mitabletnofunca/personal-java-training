@@ -44,7 +44,9 @@ public class HamiltonianRoute {
 		// TODO: Create highway route
 		//this.highwayRoute = routeArr.
 		for (Integer element : this.culDeSacs) {
-			
+			// 1. Loop thru each cul-de-sac
+			// 2. Find each cul-de-sac in the Integer route array.
+			// 3. Insert road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
 		}
 	}
 
