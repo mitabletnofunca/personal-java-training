@@ -11,5 +11,13 @@ public class Test {
 		strArr.add("abc");
 		
 		System.out.println(Collections.frequency(strArr, a));
+		
+		Integer b = new Integer(1);
+		ArrayList<Integer> intArr = new ArrayList();
+		intArr.add(1);
+		intArr.add(2);
+		intArr.add(1);
+		
+		System.out.println(Collections.frequency(intArr, b));
 	}
 }
