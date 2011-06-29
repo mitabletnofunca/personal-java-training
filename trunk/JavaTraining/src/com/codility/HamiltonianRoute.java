@@ -1,14 +1,11 @@
 package com.codility;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
 
 public class HamiltonianRoute {
 	
-	private ArrayList<Integer> highwayRoute = null;
+	private ArrayList<Integer> highwayRoute = new ArrayList<Integer>();
 	
 	/**
 	 * 
@@ -42,11 +39,22 @@ public class HamiltonianRoute {
 	ArrayList<Integer> culDeSacs = new ArrayList<Integer>();
 	private void createHighwayRoute() {
 		// TODO: Create highway route
-		//this.highwayRoute = routeArr.
-		for (Integer element : this.culDeSacs) {
+		this.highwayRoute = new ArrayList<Integer>(this.routeArr);
+		
+		for (int i = 0; i < this.culDeSacs.size() ; i++) {
 			// 1. Loop thru each cul-de-sac
-			// 2. Find each cul-de-sac in the Integer route array.
+			// 2. Find each cul-de-sac in the Integer route array (highwayRoute).
+			ArrayList<Integer> highwayRoad = new ArrayList<Integer>();
+			int nextCulDeSac = 0;
+			if (i!=this.culDeSacs.size()-1) {
+				nextCulDeSac=i+1;
+			}
+			highwayRoad.add(this.culDeSacs.get(nextCulDeSac));
+			highwayRoad.add(this.culDeSacs.get(i));
+						
 			// 3. Insert road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
+			int index = this.highwayRoute.indexOf(this.culDeSacs.get(i));
+			this.highwayRoute.addAll(index+1, highwayRoad);
 		}
 	}
 
