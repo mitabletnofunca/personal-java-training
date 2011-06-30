@@ -2,6 +2,7 @@ package com.codility;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 public class HamiltonianRoute {
 	
@@ -14,8 +15,6 @@ public class HamiltonianRoute {
 	 * @return X count of HamRoutes
 	 */
 	public int hamiltonian_routes_count(int[] A) {
-
-		int returnVal = 0;
 
 		// Get route of visited towns and convert to Array.
 		ArrayList<Integer> route = new ArrayList<Integer>(A.length);
@@ -30,26 +29,45 @@ public class HamiltonianRoute {
 		 */
 		if (hasHamRuleViolation(route)) return -2;
 		
-		//	TODO: Get cul-de-sacs and create (insert) circular highway routes
-		/** TODO: Connect all cul-de-sacs (copy orig route A to tempVar;
-		 *		insert cul-de-sac routes (roads must be taken twice))
+		//	Get cul-de-sacs and create (insert) circular highway routes
+		/** Connect all cul-de-sacs (copy orig route to highwayRoute;
+		 *		insert cul-de-sac routes (roads taken twice))
 		 */
 		ArrayList<Integer> highwayRoute = createHighwayRoute(route);
-		
 		ArrayList<String> highwayRoads = createRoads(highwayRoute);
 		
+		ArrayList<Integer> towns = new ArrayList<Integer>(new HashSet<Integer>(route));
 		// TODO: get possible HamRoutes from new temp Array (hamRoute)
+		int cntHamRoute = getHamiltonianRoutes(towns, highwayRoads);
 		
-		return returnVal;
+		return cntHamRoute;
+	}
+
+	private int getHamiltonianRoutes(ArrayList<Integer> towns,
+			ArrayList<String> highwayRoads) {
+		// TODO: How to get Hamiltonian route
+		/**
+		 * 1. For each town, get all possible roads (from highwayRoute)
+		 * 2. For each possible road (from a town), get the end town (town at
+		 * the next end of road)
+		 * 3. Have a list to keep track if a town was already visited. 
+		 * If yes, skip that road. Else, repeat for each possible road until
+		 * all roads (from a town) are exhausted. (Repeat for all towns)
+		 * 4. Count as Hamiltonian route only if:
+		 *   a. All towns were visited
+		 *   b. Order of towns (road) taken are unique
+		 *     (1-3-4 = 3-4-1 = 1-4-3)
+		 */
+		return 0;
 	}
 
 	ArrayList<Integer> culDeSacs = new ArrayList<Integer>();
 
 	private ArrayList<Integer> createHighwayRoute(ArrayList<Integer> route) {
-		// TODO: Create highway route
+		// Create highway route
 		// 		1. Loop thru each cul-de-sac
-		// 		2. Find each cul-de-sac in the Integer route array (highwayRoute)
-		// 		3. Insert road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
+		// 		2. Find index of each cul-de-sac in the highwayRoute
+		// 		3. Insert highway road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
 		
 		ArrayList<Integer> highwayRoute = new ArrayList<Integer>(route);
 
@@ -57,7 +75,7 @@ public class HamiltonianRoute {
 		int insertIdx = 0;
 		for (int i = 0; i < this.culDeSacs.size() ; i++) {
 			
-			// create road
+			// create highway road to next cul-de-sac
 			ArrayList<Integer> highwayRoad = new ArrayList<Integer>();
 			int nextCulDeSac = 0;
 			if (i != this.culDeSacs.size()-1) {
@@ -66,7 +84,7 @@ public class HamiltonianRoute {
 			highwayRoad.add(this.culDeSacs.get(nextCulDeSac));
 			highwayRoad.add(this.culDeSacs.get(i));
 
-			// 2. Find each cul-de-sac in the highwayRoute.
+			// 2. Find index of each cul-de-sac in the highwayRoute.
 			// 3. Insert highwayRoad to highwayRoute: cul-de-sac, <next cul-de-sac, cul-de-sac>
 			for ( ; insertIdx < highwayRoute.size(); insertIdx++ ) {
 				if (highwayRoute.get(insertIdx).equals(this.culDeSacs.get(i))) {
