@@ -5,8 +5,6 @@ import java.util.Collections;
 
 public class HamiltonianRoute {
 	
-	private ArrayList<Integer> highwayRoute = null;
-	
 	/**
 	 * 
 	 * @param A town route
@@ -18,18 +16,27 @@ public class HamiltonianRoute {
 	public int hamiltonian_routes_count(int[] A) {
 
 		int returnVal = 0;
+
+		// Get route of visited towns and convert to Array.
+		ArrayList<Integer> route = new ArrayList<Integer>(A.length);
+		for (int i=0; i<A.length; i++) {
+			route.add(A[i]);
+		}
+		
 		/** Check town route A for violation of 3 Hamiltonian rules
 		 * 		1) each road connects distinct towns
 		 * 		2) each town is visited either exactly once or exactly thrice
 		 * 		3) each road is taken exactly twice
 		 */
-		if (hasHamRuleViolation(A)) return -2;
+		if (hasHamRuleViolation(route)) return -2;
 		
 		//	TODO: Get cul-de-sacs and create (insert) circular highway routes
 		/** TODO: Connect all cul-de-sacs (copy orig route A to tempVar;
 		 *		insert cul-de-sac routes (roads must be taken twice))
 		 */
-		createHighwayRoute();
+		ArrayList<Integer> highwayRoute = createHighwayRoute(route);
+		
+		ArrayList<String> highwayRoads = createRoads(highwayRoute);
 		
 		// TODO: get possible HamRoutes from new temp Array (hamRoute)
 		
@@ -37,18 +44,20 @@ public class HamiltonianRoute {
 	}
 
 	ArrayList<Integer> culDeSacs = new ArrayList<Integer>();
-	private void createHighwayRoute() {
+
+	private ArrayList<Integer> createHighwayRoute(ArrayList<Integer> route) {
 		// TODO: Create highway route
 		// 		1. Loop thru each cul-de-sac
 		// 		2. Find each cul-de-sac in the Integer route array (highwayRoute)
 		// 		3. Insert road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
 		
-		this.highwayRoute = new ArrayList<Integer>(this.routeArr);
+		ArrayList<Integer> highwayRoute = new ArrayList<Integer>(route);
 
 		// 1. Loop thru each cul-de-sac
-		int nxtCulDeSacIndx = 0;
+		int insertIdx = 0;
 		for (int i = 0; i < this.culDeSacs.size() ; i++) {
-			// 2. Find each cul-de-sac in the Integer route array (highwayRoute).
+			
+			// create road
 			ArrayList<Integer> highwayRoad = new ArrayList<Integer>();
 			int nextCulDeSac = 0;
 			if (i != this.culDeSacs.size()-1) {
@@ -56,61 +65,44 @@ public class HamiltonianRoute {
 			}
 			highwayRoad.add(this.culDeSacs.get(nextCulDeSac));
 			highwayRoad.add(this.culDeSacs.get(i));
-						
-			// 3. Insert road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
-			//int index = this.highwayRoute.indexOf(this.culDeSacs.get(i)) + nxtCulDeSacIndx;
-			String strHighwayRoute = this.highwayRoute.toString();
-			int index = strHighwayRoute.indexOf(this.culDeSacs.get(i), nxtCulDeSacIndx);
-			nxtCulDeSacIndx = i + 2;
-			
-			this.highwayRoute.addAll(index+1, highwayRoad);
+
+			// 2. Find each cul-de-sac in the highwayRoute.
+			// 3. Insert highwayRoad to highwayRoute: cul-de-sac, <next cul-de-sac, cul-de-sac>
+			for ( ; insertIdx < highwayRoute.size(); insertIdx++ ) {
+				if (highwayRoute.get(insertIdx).equals(this.culDeSacs.get(i))) {
+					highwayRoute.addAll(insertIdx+1, highwayRoad);
+					insertIdx = insertIdx + 2;
+					break;
+				}
+			}
 		}
+		return highwayRoute;
 	}
 
 	// Get roads and store in an Array.
-	private ArrayList<String> roads = null;
+	//private ArrayList<String> roads = null;
 
-	// Get route of visited towns and convert to Array.
-	private ArrayList<Integer> routeArr = null;
-	
-	private boolean hasHamRuleViolation(int[] route) {
+	private boolean hasHamRuleViolation(ArrayList<Integer> route) {
 		
 		// HamRule#1: each road connects distinct towns
 		// HamRule#2: each town is visited either exactly once or exactly thrice
 		// HamRule#3: each road is taken exactly twice
 
-		this.roads = new ArrayList<String>(route.length);
-		this.routeArr = new ArrayList<Integer>(route.length);
+		ArrayList<String> roads = createRoads(route);
 		
-		for (int i=0; i<route.length; i++) {
-			this.routeArr.add(route[i]);
-
-			int[] road = { route[i], 0 };
-			if ( i != route.length - 1 ) {
-				road[1] = route[i+1];
+		for (int i=0; i<route.size(); i++) {
+			int[] road = { route.get(i), 0 };
+			if ( i != route.size() - 1 ) {
+				road[1] = route.get(i+1);
 			} else {
-				road[1] = route[0];
-			}
-
-			StringBuffer strBuff = new StringBuffer();
-			strBuff.append(String.valueOf(road[0]));
-			strBuff.append(String.valueOf(road[1]));
-			this.roads.add(strBuff.toString());
-		}
-		
-		for (int i=0; i<route.length; i++) {
-			int[] road = { route[i], 0 };
-			if ( i != route.length - 1 ) {
-				road[1] = route[i+1];
-			} else {
-				road[1] = route[0];
+				road[1] = route.get(0);
 			}
 			
 			// HamRule#1: each road connects distinct towns
 			if (road[0] == road[1]) return true;
 			
 			// HamRule#2: each town is visited either exactly once or exactly thrice
-			int townOccurrence = Collections.frequency(this.routeArr, road[0]);
+			int townOccurrence = Collections.frequency(route, road[0]);
 			if (townOccurrence != 1 && townOccurrence != 3) return true;
 			
 			// Store all cul-de-sac town for creation of highway routes
@@ -120,11 +112,32 @@ public class HamiltonianRoute {
 			StringBuffer returnRoad = new StringBuffer();
 			returnRoad.append(String.valueOf(road[1]));
 			returnRoad.append(String.valueOf(road[0]));
-			int roadOccurrence = Collections.frequency(this.roads, returnRoad.toString());
+			int roadOccurrence = Collections.frequency(roads, returnRoad.toString());
 			if (roadOccurrence != 1) return true;
 		}
 
 		return false;
 	}
+
+	private ArrayList<String> createRoads(ArrayList<Integer> route) {
+		
+		ArrayList<String> roads = new ArrayList<String>(route.size());
+		
+		for (int i=0; i<route.size(); i++) {
+			int[] road = { route.get(i), 0 };
+			if ( i != route.size() - 1 ) {
+				road[1] = route.get(i+1);
+			} else {
+				road[1] = route.get(0);
+			}
+
+			StringBuffer strBuff = new StringBuffer();
+			strBuff.append(String.valueOf(road[0]));
+			strBuff.append(String.valueOf(road[1]));
+			roads.add(strBuff.toString());
+		}
+
+	    return roads;
+    }
 
 }
