@@ -5,14 +5,14 @@ import java.util.Collections;
 
 public class HamiltonianRoute {
 	
-	private ArrayList<Integer> highwayRoute = new ArrayList<Integer>();
+	private ArrayList<Integer> highwayRoute = null;
 	
 	/**
 	 * 
 	 * @param A town route
 	 * @return -2 violates any of 3 HamRules
-	 * @return -1 cntHamRoute exceed 100M
-	 * @return 0 no HamRoute
+	 * @return -1 possible Hamiltonian routes exceed 100M
+	 * @return 0 no Hamiltonian route
 	 * @return X count of HamRoutes
 	 */
 	public int hamiltonian_routes_count(int[] A) {
