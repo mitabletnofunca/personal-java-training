@@ -16,7 +16,7 @@ public class HamiltonianRoute {
 	 * @return X count of HamRoutes
 	 */
 	public int hamiltonian_routes_count(int[] A) {
-		
+
 		int returnVal = 0;
 		/** Check town route A for violation of 3 Hamiltonian rules
 		 * 		1) each road connects distinct towns
@@ -39,21 +39,30 @@ public class HamiltonianRoute {
 	ArrayList<Integer> culDeSacs = new ArrayList<Integer>();
 	private void createHighwayRoute() {
 		// TODO: Create highway route
-		this.highwayRoute = new ArrayList<Integer>(this.routeArr);
+		// 		1. Loop thru each cul-de-sac
+		// 		2. Find each cul-de-sac in the Integer route array (highwayRoute)
+		// 		3. Insert road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
 		
+		this.highwayRoute = new ArrayList<Integer>(this.routeArr);
+
+		// 1. Loop thru each cul-de-sac
+		int nxtCulDeSacIndx = 0;
 		for (int i = 0; i < this.culDeSacs.size() ; i++) {
-			// 1. Loop thru each cul-de-sac
 			// 2. Find each cul-de-sac in the Integer route array (highwayRoute).
 			ArrayList<Integer> highwayRoad = new ArrayList<Integer>();
 			int nextCulDeSac = 0;
-			if (i!=this.culDeSacs.size()-1) {
+			if (i != this.culDeSacs.size()-1) {
 				nextCulDeSac=i+1;
 			}
 			highwayRoad.add(this.culDeSacs.get(nextCulDeSac));
 			highwayRoad.add(this.culDeSacs.get(i));
 						
 			// 3. Insert road: cul-de-sac -> <next cul-de-sac, cul-de-sac>
-			int index = this.highwayRoute.indexOf(this.culDeSacs.get(i));
+			//int index = this.highwayRoute.indexOf(this.culDeSacs.get(i)) + nxtCulDeSacIndx;
+			String strHighwayRoute = this.highwayRoute.toString();
+			int index = strHighwayRoute.indexOf(this.culDeSacs.get(i), nxtCulDeSacIndx);
+			nxtCulDeSacIndx = i + 2;
+			
 			this.highwayRoute.addAll(index+1, highwayRoad);
 		}
 	}
