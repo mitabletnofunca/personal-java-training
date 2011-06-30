@@ -1,7 +1,5 @@
 package com.codility;
 
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class Tester {
 	
