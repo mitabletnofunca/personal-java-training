@@ -38,7 +38,7 @@ public class HamiltonianRoute {
 		ArrayList<Integer> highwayRoute = createHighwayRoute(route);
 		
 		// Get possible Hamiltonian routes from new roads with circular highways
-		ArrayList<String> highwayRoads = createRoads(highwayRoute);
+		ArrayList<String> highwayRoads = createRoads(highwayRoute, false);
 		towns = new ArrayList<Integer>(new HashSet<Integer>(route));
 		
 		getHamiltonianRoutes(highwayRoads);
@@ -51,7 +51,14 @@ public class HamiltonianRoute {
 
 	private int getHamiltonianRouteCount() {
 		// TODO Auto-generated method stub
-		return hamiltonianRoutes.size();
+		ArrayList<ArrayList<String>> uniqueHamRoutes = new ArrayList<ArrayList<String>>();
+		for (ArrayList<Integer> hamRoute : hamiltonianRoutes) {
+			ArrayList<String> hamRoads = createRoads(hamRoute, true);
+			if (!uniqueHamRoutes.contains(hamRoads)) {
+				uniqueHamRoutes.add(hamRoads);
+			}
+		}
+		return uniqueHamRoutes.size();
 	}
 
 	private ArrayList<ArrayList<Integer>> hamiltonianRoutes = new ArrayList<ArrayList<Integer>>();
@@ -152,7 +159,7 @@ public class HamiltonianRoute {
 		// HamRule#2: each town is visited either exactly once or exactly thrice
 		// HamRule#3: each road is taken exactly twice
 
-		ArrayList<String> roads = createRoads(route);
+		ArrayList<String> roads = createRoads(route, false);
 		
 		for (int i=0; i<route.size(); i++) {
 			int[] road = { route.get(i), 0 };
@@ -183,7 +190,7 @@ public class HamiltonianRoute {
 		return false;
 	}
 
-	private ArrayList<String> createRoads(ArrayList<Integer> route) {
+	private ArrayList<String> createRoads(ArrayList<Integer> route, boolean reverseRoad) {
 		
 		ArrayList<String> roads = new ArrayList<String>(route.size());
 		
@@ -196,11 +203,20 @@ public class HamiltonianRoute {
 			}
 
 			StringBuffer strBuff = new StringBuffer();
-			strBuff.append(String.valueOf(road[0]));
-			strBuff.append(String.valueOf(road[1]));
+			if (reverseRoad && (road[0] > road[1])) {
+				strBuff.append(String.valueOf(road[1]));
+				strBuff.append(String.valueOf(road[0]));
+			} else {
+				strBuff.append(String.valueOf(road[0]));
+				strBuff.append(String.valueOf(road[1]));
+			}
 			roads.add(strBuff.toString());
 		}
 
+		if (reverseRoad) {
+			Collections.sort(roads);
+		}
+		
 	    return roads;
     }
 
