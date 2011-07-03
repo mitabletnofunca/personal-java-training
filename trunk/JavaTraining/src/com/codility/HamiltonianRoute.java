@@ -6,6 +6,8 @@ import java.util.HashSet;
 
 public class HamiltonianRoute {
 	
+	private ArrayList<Integer> towns = new ArrayList<Integer>();
+	
 	/**
 	 * 
 	 * @param A town route
@@ -16,7 +18,7 @@ public class HamiltonianRoute {
 	 */
 	public int hamiltonian_routes_count(int[] A) {
 
-		// Get route of visited towns and convert to Array.
+		// Get route of visited towns and convert to array.
 		ArrayList<Integer> route = new ArrayList<Integer>(A.length);
 		for (int i=0; i<A.length; i++) {
 			route.add(A[i]);
@@ -34,18 +36,28 @@ public class HamiltonianRoute {
 		 *		insert cul-de-sac routes (roads taken twice))
 		 */
 		ArrayList<Integer> highwayRoute = createHighwayRoute(route);
+		
+		// Get possible Hamiltonian routes from new roads with circular highways
 		ArrayList<String> highwayRoads = createRoads(highwayRoute);
+		towns = new ArrayList<Integer>(new HashSet<Integer>(route));
 		
-		ArrayList<Integer> towns = new ArrayList<Integer>(new HashSet<Integer>(route));
-		// TODO: get possible HamRoutes from new temp Array (hamRoute)
-		int cntHamRoute = getHamiltonianRoutes(towns, highwayRoads);
+		getHamiltonianRoutes(highwayRoads);
 		
+		// TODO: Get count of unique Hamiltonian routes. 
+		int cntHamRoute = getHamiltonianRouteCount();
+
 		return cntHamRoute;
 	}
 
-	private int getHamiltonianRoutes(ArrayList<Integer> towns,
-			ArrayList<String> highwayRoads) {
-		// TODO: How to get Hamiltonian route
+	private int getHamiltonianRouteCount() {
+		// TODO Auto-generated method stub
+		return hamiltonianRoutes.size();
+	}
+
+	private ArrayList<ArrayList<Integer>> hamiltonianRoutes = new ArrayList<ArrayList<Integer>>();
+	
+	private void getHamiltonianRoutes(ArrayList<String> highwayRoads) {
+		// How to get Hamiltonian route
 		/**
 		 * 1. For each town, get all possible roads (from highwayRoute)
 		 * 2. For each possible road (from a town), get the end town (town at
@@ -59,78 +71,40 @@ public class HamiltonianRoute {
 		 *     (1-3-4 = 3-4-1 = 1-4-3)
 		 */
 		
-		ArrayList<ArrayList<Integer>> hamiltonianRoutes = new ArrayList<ArrayList<Integer>>();
 		for (Integer town : towns) {
-			//ArrayList<Integer> hamiltonianRoute = new ArrayList<Integer>();
 			ArrayList<Integer> townsVisited = new ArrayList<Integer>(towns.size());
 			townsVisited.add(town);
-			
-			// Get all roads from the town.
-			//   3 is the count of road possible from each town
-			ArrayList<String> roadsFromTown = new ArrayList<String>(3);
-			for (String road : highwayRoads) {
-				if (road.startsWith(town.toString())) {
-					roadsFromTown.add(road);
-				}
-			}
-			
-			for (int i = 0; i < roadsFromTown.size() ; i++) {
-				Integer nextTown = new Integer(roadsFromTown.get(i).substring(1));
-				townsVisited.add(nextTown);
-				
-				for (int j = 0 ; j < highwayRoads.size() ; j++ ) {
-					String road = highwayRoads.get(j);
-					if (road.startsWith(nextTown.toString())) {
-						Integer tempNextTown = new Integer(road.substring(1));
-						if (!townsVisited.contains(tempNextTown)) {
-							townsVisited.add(new Integer(tempNextTown));
-							nextTown = tempNextTown;
-							j = -1;
-						}
-						if (townsVisited.containsAll(towns)) {
-							hamiltonianRoutes.add(townsVisited);
-							townsVisited = new ArrayList<Integer>(towns.size());
-							townsVisited.add(town);
-							break;
-						}
-					}					
-				}
-
-			}
+			getHamiltonianRoute(town, townsVisited, highwayRoads);
 		}
-		return hamiltonianRoutes.size();
 	}
 	
-	private void scratchGetHamiltonianRoute() {
-		/*
-		// Get all roads from the town.
-		//   3 is the count of road possible from each town
-		ArrayList<String> roadsFromTown = new ArrayList<String>(3);
-		for (String road : highwayRoads) {
-			if (road.startsWith(town.toString())) {
-				roadsFromTown.add(road);
-			}
-		}
+	private void getHamiltonianRoute(Integer town,
+			ArrayList<Integer> townsVisited, ArrayList<String> highwayRoads) {
 		
-		for (int i = 0; i < roadsFromTown.size() ; i++) {
-			Integer nextTown = new Integer(roadsFromTown.get(i).substring(1));
-			townsVisited.add(nextTown);
-			
-			for (String road : highwayRoads) {
-				if (road.startsWith(town.toString())) {
-					town = new Integer(road.substring(1));
-					if (!townsVisited.contains(town)) {
-						townsVisited.add(new Integer(town));
-					}
-					if (townsVisited.containsAll(towns)) {
-						hamiltonianRoutes.add(townsVisited);
-						break;
-					}
-				}					
+		ArrayList<Integer> tempTownsVisited = new ArrayList<Integer>(townsVisited);
+		
+		for (int i = 0; i < highwayRoads.size() ; i++) {
+			String road = highwayRoads.get(i);
+			Integer tempNextTown = null;
+			if (road.startsWith(town.toString())) {
+				tempNextTown = new Integer(road.substring(1));
+			} else {
+				continue;
 			}
-
+			
+			if (tempNextTown != null && !townsVisited.contains(tempNextTown)) {
+				tempTownsVisited.add(tempNextTown);
+				if (hamiltonianRoutes.contains(tempTownsVisited)) {
+					// do nothing.
+				} else if (tempTownsVisited.containsAll(towns)) {
+					hamiltonianRoutes.add(tempTownsVisited);
+					break;
+				} else {
+					getHamiltonianRoute(tempNextTown, tempTownsVisited, highwayRoads);
+				}
+				tempTownsVisited = new ArrayList<Integer>(townsVisited);
+			}
 		}
-		*/
 	}
 
 	ArrayList<Integer> culDeSacs = new ArrayList<Integer>();
