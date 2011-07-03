@@ -19,6 +19,6 @@ public class Tester {
 		int[] route3 = { 5, 1, 5, 3, 5, 4 };
 		//HamiltonianRoute hamRoute = new HamiltonianRoute();
 		System.out.println(hamRoute.hamiltonian_routes_count(route3));
-
+		
 	}
 }
