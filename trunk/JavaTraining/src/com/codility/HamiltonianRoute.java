@@ -116,10 +116,17 @@ public class HamiltonianRoute {
 				continue;
 			}
 			
+			/* TODO: Possible performance improvement:
+			 *  - Break loop once all surrounding towns of startTown were visited
+			 *  before all towns were visited.
+			 */
+			
 			if (tempNextTown != null && !townsVisited.contains(tempNextTown)) {
 				tempTownsVisited.add(tempNextTown);
-				if (hamiltonianRoutes.contains(tempTownsVisited)) {
-					// do nothing.
+				if (hamiltonianRoutes.contains(tempTownsVisited) 
+					|| (tempTownsVisited.containsAll(surroundingTowns)
+						&& tempTownsVisited.size() != towns.size())) {
+					break;
 				} else if (tempTownsVisited.containsAll(towns)) {
 					Integer lastTown = tempTownsVisited.get(tempTownsVisited.size()-1);
 					if (surroundingTowns.contains(lastTown))
