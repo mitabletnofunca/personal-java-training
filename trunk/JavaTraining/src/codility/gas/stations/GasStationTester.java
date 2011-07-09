@@ -8,11 +8,15 @@ public class GasStationTester {
 	 */
 	public static void main(String[] args) {
 		
-		int[] distance = { 4, 0, 4, 3, 4, 1, 5, 1, 7, 6, 7, 2, 7, 1 };
-		int[] price = { 4, 0, 4, 3, 4, 1, 5, 1, 7, 6, 7, 2, 7, 1 };
+		int[] distance = { 10, 9, 8 };
+		int[] price = { 2, 1, 3 };
 		int tank = 15;
 		GasStations gasStations = new GasStations();
-		// return value should be 41
+		/* 
+		 * Return value should be 41:
+		 *  Refill strategy: R = { 10, 15, 2 }
+		 *  Cost: C = 10*2 + 15*1 + 2*3
+		 */
 		System.out.println(gasStations.gas_stations(distance, price, tank));
 		
 	}
