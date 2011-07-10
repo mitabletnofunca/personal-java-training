@@ -8,7 +8,7 @@ class ArrayJmp {
 	  int cnt = 0, indx = 0;
 	  while (indx < A.length) {
 		  if (indx != A[indx]) {
-			  indx = A[indx] + indx;
+			  indx += A[indx];
 			  cnt++;
 		  } else {
 			  return -1;
