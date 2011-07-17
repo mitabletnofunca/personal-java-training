@@ -1,4 +1,4 @@
-package com.codility;
+package codility.certification;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.codility;
+package codility.certification;
 
 
 public class Tester {
