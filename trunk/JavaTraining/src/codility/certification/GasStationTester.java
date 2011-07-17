@@ -1,4 +1,4 @@
-package codility.gas.stations;
+package codility.certification;
 
 
 public class GasStationTester {
