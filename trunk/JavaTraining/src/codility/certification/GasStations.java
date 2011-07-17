@@ -1,5 +1,7 @@
 package codility.certification;
 
+import java.util.ArrayList;
+
 public class GasStations {
 	
 	
@@ -14,6 +16,27 @@ public class GasStations {
 	 * 
 	 */
 	public int gas_stations(int[] D, int[] P, int T) {
+		
+		long totalDist = 0;
+		for (int element: D) {
+			totalDist += element;
+		}
+		System.out.println(totalDist);
+		
+		// TODO: create refill strategy
+		// Create a refill strategy based on value of each element of D
+		ArrayList<Integer> refillStr = new ArrayList<Integer>(D.length);
+		long tempTotalDist = totalDist;
+		while (tempTotalDist > 0) {
+			refillStr.add(T);
+			tempTotalDist = tempTotalDist - T;
+		}
+
+		// TODO: After creating valid refill strategies, compute for the total cost
+		// of each.
+		
+		// TODO: After computing total cost of each refill strategy,
+		// sort then return the least value.
 		
 		/*
 		 * Problem points:
