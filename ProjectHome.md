@@ -1,0 +1,1 @@
+Shared project resource/source for my personal java training
